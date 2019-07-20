@@ -4,7 +4,7 @@
 
 @defcomp bc_snow_rf begin
 
-    BC_emiss   		= Parameter(index=[time]) # Black carbon emissions (Mt yr⁻¹).
+    BC_emiss        = Parameter(index=[time]) # Black carbon emissions (Mt yr⁻¹).
 
     forcing_BC_snow = Variable(index=[time])  # Radiative forcing from black carbon (Wm⁻²).
 end

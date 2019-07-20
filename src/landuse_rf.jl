@@ -17,9 +17,9 @@ function run_timestep(s::landuse_rf, t::Int)
 
     # Calculate cumulative land use emissions (based on RCP 'OtherCO2' emissions).
     if t == 1
-    	v.cumulative_emiss[t] = p.landuse_emiss[t]
+        v.cumulative_emiss[t] = p.landuse_emiss[t]
     else
-    	v.cumulative_emiss[t] = v.cumulative_emiss[t-1] + p.landuse_emiss[t]
+        v.cumulative_emiss[t] = v.cumulative_emiss[t-1] + p.landuse_emiss[t]
     end
 
     # Caluclate land use forcing (based on regression of non-fossil CO₂ emissions against AR5 land use forcing).

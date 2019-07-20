@@ -3,11 +3,11 @@
 # ---------------------------------------------------------------
 
 @defcomp co2_rf begin
- 	a₁        = Parameter()             # Carbon dioxide forcing constant.
+    a₁        = Parameter()             # Carbon dioxide forcing constant.
     b₁        = Parameter()             # Carbon dioxide forcing constant.
     c₁        = Parameter()             # Carbon dioxide forcing constant.
     CO₂_0     = Parameter()             # Initial (pre-industrial) carbon dioxide concentration (ppm).
-	N₂O_0     = Parameter()             # Initial (pre-industrial) nitrous oxide concentration (ppb).
+    N₂O_0     = Parameter()             # Initial (pre-industrial) nitrous oxide concentration (ppb).
     scale_CO₂ = Parameter()             # Radiative forcing scaling term (to keep forcing from 2x CO₂ consistent).
     N₂O       = Parameter(index=[time]) # Atmospheric nitrous oxide concentration (ppb).
     CO₂       = Parameter(index=[time]) # Atmospheric carbon dioxide concentration (ppm).

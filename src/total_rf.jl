@@ -31,11 +31,11 @@
   F_landuse                 = Parameter(index=[time])            # Radiative forcing from land-use surface albedo change (Wm⁻²).
   F_contrails               = Parameter(index=[time])            # Radiative forcing from contrails (Wm⁻²).
   F_volcanic                = Parameter(index=[time])            # Radiative forcing from volcanic eruptions (Wm⁻²).
-	F_solar                   = Parameter(index=[time])            # Radiative forcing from solar irradience (Wm⁻²).
-	F_exogenous               = Parameter(index=[time])            # Radiative forcing from exogenous sources not included in this module (Wm⁻²).
+  F_solar                   = Parameter(index=[time])            # Radiative forcing from solar irradience (Wm⁻²).
+  F_exogenous               = Parameter(index=[time])            # Radiative forcing from exogenous sources not included in this module (Wm⁻²).
   F_other_ghg               = Parameter(index=[time, other_ghg]) # Radiative forcing from other well-mixed greenhouse gases (Wm⁻²).
 
-	total_forcing             = Variable(index = [time])           # Total radiative forcing, with individual components scaled by their respective efficacy (Wm⁻²).
+  total_forcing             = Variable(index = [time])           # Total radiative forcing, with individual components scaled by their respective efficacy (Wm⁻²).
 
 end
 

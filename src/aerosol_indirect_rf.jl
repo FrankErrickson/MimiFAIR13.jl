@@ -4,7 +4,7 @@
 
 @defcomp aerosol_indirect_rf begin
 
-	ϕ                     = Parameter()             # Scale factor.
+    ϕ                     = Parameter()             # Scale factor.
     b_SOx                 = Parameter()             # Sensitivity to sulfur oxides emissions.
     b_POM                 = Parameter()             # Sensitivity to black carbon + organic carbon emissions.
     SOx_emiss_1765        = Parameter()             # 1765 sulfur oxides emissions (Mt yr⁻¹).

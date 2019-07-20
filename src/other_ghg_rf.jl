@@ -5,7 +5,7 @@
 
     other_ghg            = Index()                            # Index for other well-mixed greenhouse gases.
 
-	other_ghg_0          = Parameter(index=[other_ghg])       # Initial (pre-industrial) concentration for other well-mixed greenhouse gases (ppt).
+    other_ghg_0          = Parameter(index=[other_ghg])       # Initial (pre-industrial) concentration for other well-mixed greenhouse gases (ppt).
     radiative_efficiency = Parameter(index=[other_ghg])       # Radiative efficiencies for other well-mixed greenhouse gases - from IPCC AR5 WG1 Ch8 SM (Wm⁻²ppb⁻¹).
     conc_other_ghg       = Parameter(index=[time, other_ghg]) # Atmospheric concentrations for other well-mixed greenhouse gases (ppt).
 

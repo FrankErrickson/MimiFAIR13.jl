@@ -4,7 +4,7 @@
 
 @defcomp aerosol_direct_rf begin
 
-	β_SOx            = Parameter()             # Sulfur oxides radiative efficiency: Wm⁻²(Mt yr⁻¹)⁻¹.
+    β_SOx            = Parameter()             # Sulfur oxides radiative efficiency: Wm⁻²(Mt yr⁻¹)⁻¹.
     β_CO             = Parameter()             # Carbon monoxide radiative efficiency: Wm⁻²(Mt yr⁻¹)⁻¹.
     β_NMVOC          = Parameter()             # Non-methane volatile organic compounds radiative efficiency: Wm⁻²(Mt yr⁻¹)⁻¹.
     β_NOx            = Parameter()             # Nitrogon oxides radiative efficiency: Wm⁻²(Mt yr⁻¹)⁻¹.
