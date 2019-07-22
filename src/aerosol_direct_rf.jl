@@ -11,6 +11,7 @@
     β_BC             = Parameter()             # Black carbon radiative efficiency: Wm⁻²(Mt yr⁻¹)⁻¹.
     β_OC             = Parameter()             # Organic carbon radiative efficiency: Wm⁻²(Mt yr⁻¹)⁻¹.
     β_NH3            = Parameter()             # Ammonia radiative efficiency: Wm⁻²(Mt yr⁻¹)⁻¹.
+    rf_scale_aerosol = Parameter()             # Scaling factor to capture effective radiative forcing uncertainty.
     SOx_emiss        = Parameter(index=[time]) # Emissions (MtS yr⁻¹).
     CO_emiss         = Parameter(index=[time]) # Emissions (MtCO yr⁻¹).
     NMVOC_emiss      = Parameter(index=[time]) # Emissions (Mt yr⁻¹).
@@ -45,5 +46,5 @@ function run_timestep(s::aerosol_direct_rf, t::Int)
 
     # Total direct aerosol forcing based on linear relationships between emissions and forcing in Aerocom models.
     # Reference: Myhre et al., 2013: https://www.atmos-chem-phys.net/13/1853/2013
-    v.F_aerosol_direct[t] = v.F_SOx[t] + v.F_CO[t] +  v.F_NMVOC[t] + v.F_NOx[t] + v.F_BC[t] + v.F_OC[t] +  v.F_NH3[t]
+    v.F_aerosol_direct[t] = (v.F_SOx[t] + v.F_CO[t] +  v.F_NMVOC[t] + v.F_NOx[t] + v.F_BC[t] + v.F_OC[t] +  v.F_NH3[t]) * p.rf_scale_aerosol
 end

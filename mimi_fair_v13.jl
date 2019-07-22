@@ -23,7 +23,7 @@ include("src/contrails_rf.jl")
 include("src/total_rf.jl")
 include("src/temperature.jl")
 
-function constructfair(;rcp_scenario::String="RCP85", start_year::Int64=1765, end_year::Int64=2500, F2x::Float64=3.71, TCR::Float64=1.6, ECS::Float64=2.75, d::Array{Float64,1}=[239.0, 4.1])
+function construct_fair(;rcp_scenario::String="RCP85", start_year::Int64=1765, end_year::Int64=2500, F2x::Float64=3.71, TCR::Float64=1.6, ECS::Float64=2.75, d::Array{Float64,1}=[239.0, 4.1])
 
     # ---------------------------------------------
     # Set up some data.
@@ -142,7 +142,7 @@ function constructfair(;rcp_scenario::String="RCP85", start_year::Int64=1765, en
     setparameter(m, :co2_rf, :c₁, -2.1e-4)
     setparameter(m, :co2_rf, :CO₂_0, gas_data[findin(gas_data[:gas],["CO2"]), :pi_conc][1])
     setparameter(m, :co2_rf, :N₂O_0, gas_data[findin(gas_data[:gas],["N2O"]), :pi_conc][1])
-    setparameter(m, :co2_rf, :scale_CO₂, scale_co2_forcing)
+    setparameter(m, :co2_rf, :rf_scale_CO₂, scale_co2_forcing)
 
     # ---- Other Well-Mixed Greenhouse Gas Radiative Forcings ---- #
     setparameter(m, :other_ghg_rf, :other_ghg_0,  gas_data[findin(gas_data[:gas], other_ghg_names), :pi_conc])
@@ -176,6 +176,7 @@ function constructfair(;rcp_scenario::String="RCP85", start_year::Int64=1765, en
     setparameter(m, :aerosol_direct_rf, :β_BC, 1.601537e-2)
     setparameter(m, :aerosol_direct_rf, :β_OC, -1.45339e-3)
     setparameter(m, :aerosol_direct_rf, :β_NH3, -1.55605e-3)
+    setparameter(m, :aerosol_direct_rf, :rf_scale_aerosol, 1.0)
     setparameter(m, :aerosol_direct_rf, :SOx_emiss, rcp_emissions[:SOx])
     setparameter(m, :aerosol_direct_rf, :CO_emiss, rcp_emissions[:CO])
     setparameter(m, :aerosol_direct_rf, :NMVOC_emiss, rcp_emissions[:NMVOC])
@@ -188,6 +189,7 @@ function constructfair(;rcp_scenario::String="RCP85", start_year::Int64=1765, en
     setparameter(m, :aerosol_indirect_rf, :ϕ, -1.95011431)
     setparameter(m, :aerosol_indirect_rf, :b_SOx, 0.01107147)
     setparameter(m, :aerosol_indirect_rf, :b_POM, 0.01387492)
+    setparameter(m, :aerosol_indirect_rf, :rf_scale_aerosol, 1.0)
     setparameter(m, :aerosol_indirect_rf, :SOx_emiss, rcp_emissions[:SOx])
     setparameter(m, :aerosol_indirect_rf, :BC_emiss, rcp_emissions[:BC])
     setparameter(m, :aerosol_indirect_rf, :OC_emiss, rcp_emissions[:OC])

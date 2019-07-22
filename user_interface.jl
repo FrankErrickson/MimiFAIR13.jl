@@ -33,7 +33,7 @@ d = [239.0, 4.1]
 ####################################################################################################
 
 # Create instance of Mimi-FAIR model given user settings.
-m = constructfair(rcp_scenario=rcp, start_year=start_year, end_year=end_year, F2x=f2x, TCR=tcr, ECS=ecs, d=d)
+m = construct_fair(rcp_scenario=rcp, start_year=start_year, end_year=end_year, F2x=f2x, TCR=tcr, ECS=ecs, d=d)
 
 # Run model.
 run(m)
