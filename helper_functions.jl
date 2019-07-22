@@ -189,3 +189,69 @@ function load_fair_data(start_year::Int64, end_year::Int64, rcp_scenario::String
 
     return emissions, cmip6_volcano_forcing, cmip6_solar_forcing, gas_data, gas_fractions, emiss_conversions
 end
+
+
+
+#######################################################################################################################
+# LOAD CALIBRATION DATA
+########################################################################################################################
+# Description: This function loads and combines all of the calibration data and observation measurement errors.
+#
+# Function Arguments:
+#
+#       start_year:      First year to run the model for calibration (default 1765).
+#       end_year:        Final year to run the model for calibration (default 2017).
+#----------------------------------------------------------------------------------------------------------------------
+
+function load_calibration_data(;start_year::Int64=1765, end_year::Int64=2017)
+
+    # Create column of calibration years and calculate indicies for calibration time period.
+    calibration_data = DataFrame(year = collect(start_year:end_year))
+    index_start, index_end = findin(collect(1765:2500), [start_year, end_year])
+
+    #-------------------------------------------------------------------
+    # HadCRUT4 temperature data (anomalies relative to 1861-1880 mean).
+    #-------------------------------------------------------------------
+    raw_temp_data = DataFrame(load(joinpath(@__DIR__, "calibration", "calibration_data", "hadcrut4_global_temperature.csv"), skiplines_begin=24))
+
+    # Find indices to normalize temperature data to 1861-1880 mean.
+    index_1861, index_1880 = findin(raw_temp_data[:year], [1861, 1880])
+
+    # Normalize temperature data to 1861-1880 mean.
+    norm_temp_data = DataFrame(year=raw_temp_data[:year], hadcrut_temp_obs = raw_temp_data[:median] .- mean(raw_temp_data[:median][index_1861:index_1880]))
+
+    # Join data on year.
+    calibration_data = join(calibration_data, norm_temp_data, on=:year, kind=:outer)
+
+    # Read in HadCRUT4 1σ errors and rename column
+    raw_temp_errors = DataFrame(load(joinpath(@__DIR__, "calibration", "calibration_data", "hadcrut4_measurement_errors.csv"), skiplines_begin=21))
+    rename!(raw_temp_errors, :one_sigma_all => :hadcrut_temp_sigma)
+
+    # Join data on year
+    calibration_data = join(calibration_data, raw_temp_errors[[:year, :hadcrut_temp_sigma]], on=:year, kind=:outer)
+
+    #--------------------------------------------------------
+    # Mauna Loa instrumental atmospheric CO₂ concentrations.
+    #--------------------------------------------------------
+
+    # Load Mauna Loa CO₂ observations and errors, and rename columns.
+    raw_mauna_loa_co2_data = DataFrame(load(joinpath(@__DIR__, "calibration", "calibration_data", "atmospheric_co2_mauna_loa.csv"), skiplines_begin=59))
+    rename!(raw_mauna_loa_co2_data, :mean => :maunaloa_co2_obs, :unc => :maunaloa_co2_sigma)
+
+    # Join data on year
+    calibration_data = join(calibration_data, raw_mauna_loa_co2_data, on=:year, kind=:outer)
+
+    #-----------------------------------------------------
+    # Law Dome ice core atmospheric CO₂ concentrations.
+    #-----------------------------------------------------
+
+    # Load Law Dome CO₂ observations and errors, and rename columns.
+    raw_law_dome_co2_data = DataFrame(load(joinpath(@__DIR__, "calibration", "calibration_data", "atmospheric_co2_law_dome.csv"), skiplines_begin=4))
+    rename!(raw_law_dome_co2_data, :co2_ice => :lawdome_co2_obs, :one_sigma_error => :lawdome_co2_sigma)
+
+    # Join data on year
+    calibration_data = join(calibration_data, raw_law_dome_co2_data, on=:year, kind=:outer)
+
+    # Crop data to appropriate calibration years and return.
+    return calibration_data[index_start:index_end, :]
+end
