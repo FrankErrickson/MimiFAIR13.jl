@@ -218,17 +218,17 @@ function load_calibration_data(;start_year::Int64=1765, end_year::Int64=2017)
     index_1861, index_1880 = findin(raw_temp_data[:year], [1861, 1880])
 
     # Normalize temperature data to 1861-1880 mean.
-    norm_temp_data = DataFrame(year=raw_temp_data[:year], hadcrut_temp_obs = raw_temp_data[:median] .- mean(raw_temp_data[:median][index_1861:index_1880]))
+    norm_temp_data = DataFrame(year=raw_temp_data[:year], hadcrut_temperature_obs = raw_temp_data[:median] .- mean(raw_temp_data[:median][index_1861:index_1880]))
 
     # Join data on year.
     calibration_data = join(calibration_data, norm_temp_data, on=:year, kind=:outer)
 
     # Read in HadCRUT4 1σ errors and rename column
     raw_temp_errors = DataFrame(load(joinpath(@__DIR__, "calibration", "calibration_data", "hadcrut4_measurement_errors.csv"), skiplines_begin=21))
-    rename!(raw_temp_errors, :one_sigma_all => :hadcrut_temp_sigma)
+    rename!(raw_temp_errors, :one_sigma_all => :hadcrut_temperature_sigma)
 
     # Join data on year
-    calibration_data = join(calibration_data, raw_temp_errors[[:year, :hadcrut_temp_sigma]], on=:year, kind=:outer)
+    calibration_data = join(calibration_data, raw_temp_errors[[:year, :hadcrut_temperature_sigma]], on=:year, kind=:outer)
 
     #--------------------------------------------------------
     # Mauna Loa instrumental atmospheric CO₂ concentrations.
