@@ -12,3 +12,8 @@ The `user_interface.jl` file contains a number of model settings that can be cha
 
 ### Model Validation
 The model closely matches the original [Python implementation](https://github.com/OMS-NetZero/FAIR) of FAIR (version downloaded July 18, 2019). The plots below compare the Julia and Python versions of FAIR v1.3 across the four RCP scenarios. ![alt text](https://github.com/FrankErrickson/mimi_fair_v13/blob/master/Mimi%20vs%20Python%20FAIR.png)
+
+### Calibrating the Model with MCMC
+The file `calibration/calibrate_model.jl` has several calibration settings that can be modified by the user. After making any necessary changes and saving the file, running `include(calibration/calibrate_model.jl)` will carry out the MCMC calibration. The calibrated parameters are stored in a variable called `mcmc_chain`.
+
+*Note: The calibration currently has a bug.*
