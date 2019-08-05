@@ -291,7 +291,7 @@ function construct_log_posterior(f_run_model; start_year::Int64=1765, end_year::
             # Assume Law Dome observations map to 8-year modeled CO₂ mean, centered on year of ice core observation.
             co2ice_mean[i] = mean(modeled_co2[index + (-4:3)])
             # Calculate Law Dome CO₂ likelihood (sparse data, so do not use AR(1) likelihood function).
-            llik_co2ice = llik_co2ice + logpdf(Normal(co2ice_mean[i], sqrt(σ_co2ice^2 + calibration_data[index, :lawdome_co2_sigma]^2)), calibration_data[index, :lawdome_co2_obs]-co2ice_mean[i])
+            llik_co2ice = llik_co2ice + logpdf(Normal(co2ice_mean[i], sqrt(σ_co2ice^2 + calibration_data[index, :lawdome_co2_sigma]^2)), calibration_data[index, :lawdome_co2_obs])
         end
 
         #-----------------------------------------------------------------------
