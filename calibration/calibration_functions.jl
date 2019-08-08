@@ -26,7 +26,7 @@ function load_calibration_data(;start_year::Int64=1765, end_year::Int64=2017)
     #-------------------------------------------------------------------
     # HadCRUT4 temperature data (anomalies relative to 1861-1880 mean).
     #-------------------------------------------------------------------
-    raw_temp_data = DataFrame(load(joinpath(@__DIR__, "calibration_data", "hadcrut4_global_temperature.csv"), skiplines_begin=24))
+    raw_temp_data = DataFrame(load(joinpath("calibration", "calibration_data", "hadcrut4_global_temperature.csv"), skiplines_begin=24))
 
     # Find indices to normalize temperature data to 1861-1880 mean.
     index_1861, index_1880 = findin(raw_temp_data[:year], [1861, 1880])
@@ -38,7 +38,7 @@ function load_calibration_data(;start_year::Int64=1765, end_year::Int64=2017)
     calibration_data = join(calibration_data, norm_temp_data, on=:year, kind=:outer)
 
     # Read in HadCRUT4 1σ errors and rename column.
-    raw_temp_errors = DataFrame(load(joinpath(@__DIR__, "calibration_data", "hadcrut4_measurement_errors.csv"), skiplines_begin=21))
+    raw_temp_errors = DataFrame(load(joinpath("calibration", "calibration_data", "hadcrut4_measurement_errors.csv"), skiplines_begin=21))
     rename!(raw_temp_errors, :one_sigma_all => :hadcrut_temperature_sigma)
 
     # Join data on year
@@ -49,7 +49,7 @@ function load_calibration_data(;start_year::Int64=1765, end_year::Int64=2017)
     #--------------------------------------------------------
 
     # Load Mauna Loa CO₂ observations and errors, and rename columns.
-    raw_mauna_loa_co2_data = DataFrame(load(joinpath(@__DIR__, "calibration_data", "atmospheric_co2_mauna_loa.csv"), skiplines_begin=59))
+    raw_mauna_loa_co2_data = DataFrame(load(joinpath("calibration", "calibration_data", "atmospheric_co2_mauna_loa.csv"), skiplines_begin=59))
     rename!(raw_mauna_loa_co2_data, :mean => :maunaloa_co2_obs, :unc => :maunaloa_co2_sigma)
 
     # Join data on year
@@ -60,7 +60,7 @@ function load_calibration_data(;start_year::Int64=1765, end_year::Int64=2017)
     #-----------------------------------------------------
 
     # Load Law Dome CO₂ observations and errors, and rename columns.
-    raw_law_dome_co2_data = DataFrame(load(joinpath(@__DIR__, "calibration_data", "atmospheric_co2_law_dome.csv"), skiplines_begin=4))
+    raw_law_dome_co2_data = DataFrame(load(joinpath("calibration", "calibration_data", "atmospheric_co2_law_dome.csv"), skiplines_begin=4))
     rename!(raw_law_dome_co2_data, :co2_ice => :lawdome_co2_obs, :one_sigma_error => :lawdome_co2_sigma)
 
     # Join data on year
