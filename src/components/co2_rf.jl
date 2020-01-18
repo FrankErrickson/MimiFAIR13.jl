@@ -14,17 +14,15 @@
 
 
     rf_co2    = Variable(index=[time])  # Forcing from atmospheric carbon dioxide concentrations (Wm⁻²).
-end
 
 
-function run_timestep(s::co2_rf, t::Int)
-    v = s.Variables
-    p = s.Parameters
+    function run_timestep(p, v, d, t)
 
-    # Create temporary variables.
-    CO₂_diff = p.CO₂[t]-p.CO₂_0
-    N_hat = 0.5 * (p.N₂O[t] + p.N₂O_0)
+        # Create temporary variables.
+        CO₂_diff = p.CO₂[t]-p.CO₂_0
+        N_hat = 0.5 * (p.N₂O[t] + p.N₂O_0)
 
-    # Calculate carbon dioxide radiative forcing.
-    v.rf_co2[t] = ((p.a₁*CO₂_diff^2 + p.b₁*abs(CO₂_diff) + p.c₁*N_hat + 5.36) * log(p.CO₂[t] / p.CO₂_0)) * p.scale_CO₂
+        # Calculate carbon dioxide radiative forcing.
+        v.rf_co2[t] = ((p.a₁*CO₂_diff^2 + p.b₁*abs(CO₂_diff) + p.c₁*N_hat + 5.36) * log(p.CO₂[t] / p.CO₂_0)) * p.scale_CO₂
+    end
 end

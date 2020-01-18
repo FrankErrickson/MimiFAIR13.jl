@@ -14,18 +14,16 @@
     CH₄         = Parameter(index=[time]) # Atmospheric methane concentration (ppb).
 
     forcing_N₂O = Variable(index=[time])  # Direct forcing from nitrous oxide concentrations (Wm⁻²).
-end
 
-function run_timestep(s::n2o_rf, t::Int)
-    v = s.Variables
-    p = s.Parameters
 
-    # Create temporary averaging variables.
-    M_bar = 0.5 * (p.CH₄[t] + p.CH₄_0)
-    N_bar = 0.5 * (p.N₂O[t] + p.N₂O_0)
-    C_bar = 0.5 * (p.CO₂[t] + p.CO₂_0)
+    function run_timestep(p, v, d, t)
 
-    # Direct nitrous oxide radiative forcing.
-    v.forcing_N₂O[t] = (p.a₂ * C_bar + p.b₂ * N_bar + p.c₂ * M_bar + 0.117) * (sqrt(p.N₂O[t]) - sqrt(p.N₂O_0))
+        # Create temporary averaging variables.
+        M_bar = 0.5 * (p.CH₄[t] + p.CH₄_0)
+        N_bar = 0.5 * (p.N₂O[t] + p.N₂O_0)
+        C_bar = 0.5 * (p.CO₂[t] + p.CO₂_0)
 
+        # Direct nitrous oxide radiative forcing.
+        v.forcing_N₂O[t] = (p.a₂ * C_bar + p.b₂ * N_bar + p.c₂ * M_bar + 0.117) * (sqrt(p.N₂O[t]) - sqrt(p.N₂O_0))
+    end
 end

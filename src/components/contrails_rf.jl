@@ -13,18 +13,16 @@
     frac              = Parameter(index=[time]) # Fraction of total nitrogen oxides emissions due to aviation.
 
     forcing_contrails = Variable(index=[time])  # Forcing approximation from aviation contrails (Wm⁻²).
-end
 
 
-function run_timestep(s::contrails_rf, t::Int)
-    v = s.Variables
-    p = s.Parameters
+    function run_timestep(p, v, d, t)
 
-    # Caluclate forcing from contrail.
-    # Note: If 'E_ref' in units of NO₂ rather than N, use ratio of molecular weights for conversion.
-    if p.ref_is_NO2
-        v.forcing_contrails[t] = p.NOx_emiss[t] * p.frac[t] * (p.F_ref/p.E_ref) * (p.mol_weight_NO₂ / p.mol_weight_N)
-    else
-        v.forcing_contrails[t] = p.NOx_emiss[t] * p.frac[t] * (p.F_ref/p.E_ref)
+        # Caluclate forcing from contrail.
+        # Note: If 'E_ref' in units of NO₂ rather than N, use ratio of molecular weights for conversion.
+        if p.ref_is_NO2
+            v.forcing_contrails[t] = p.NOx_emiss[t] * p.frac[t] * (p.F_ref/p.E_ref) * (p.mol_weight_NO₂ / p.mol_weight_N)
+        else
+            v.forcing_contrails[t] = p.NOx_emiss[t] * p.frac[t] * (p.F_ref/p.E_ref)
+        end
     end
 end

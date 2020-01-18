@@ -18,22 +18,21 @@
     int_eecs                   = Variable(index=[time, ozone_depleting_substances])  # Intermediate terms to caluclate equivalent effective stratospheric chlorine (EESC) for ozone-depleting substances (just for convenience).
     eecs                       = Variable(index=[time])                              # Equivalent effective stratospheric chlorine (EESC) for ozone-depleting substances.
     forcing_strat_O₃           = Variable(index=[time])                              # Radiative forcing from stratospheric ozone (Wm⁻²).
-end
 
 
-function run_timestep(s::strat_o3_rf, t::Int)
-    v, p, d = getvpd(s)
+    function run_timestep(p, v, d, t)
 
-    for g in d.ozone_depleting_substances
+        for g in d.ozone_depleting_substances
 
-        # Calculate intermediate variables for EECS (calculations done for each individual ozone-depleting substance).
-        # Note from FAIR Code: "EESC takes ODS concentrations in ppb, we provide ppt."
-        v.int_eecs[t,g] = p.Cl[g] * 1000.0 * (p.conc_ODS[t,g]-p.ODS₀[g]) * (p.FC[g]/p.FC[1]) + 45 * p.Br[g] * 1000 * (p.conc_ODS[t,g]-p.ODS₀[g]) * (p.FC[g]/p.FC[1])
+            # Calculate intermediate variables for EECS (calculations done for each individual ozone-depleting substance).
+            # Note from FAIR Code: "EESC takes ODS concentrations in ppb, we provide ppt."
+            v.int_eecs[t,g] = p.Cl[g] * 1000.0 * (p.conc_ODS[t,g]-p.ODS₀[g]) * (p.FC[g]/p.FC[1]) + 45 * p.Br[g] * 1000 * (p.conc_ODS[t,g]-p.ODS₀[g]) * (p.FC[g]/p.FC[1])
+        end
+
+        # Calcualte equivalent effective stratospheric chlorine.
+        v.eecs[t] = max((p.FC[1]*sum(v.int_eecs[t,:])), 0.0)
+
+        # Calcualte stratospheric O₃ forcing.
+        v.forcing_strat_O₃[t] = p.δ1 * (p.δ2 * v.eecs[t]) ^ p.δ3
     end
-
-    # Calcualte equivalent effective stratospheric chlorine.
-    v.eecs[t] = max((p.FC[1]*sum(v.int_eecs[t,:])), 0.0)
-
-    # Calcualte stratospheric O₃ forcing.
-    v.forcing_strat_O₃[t] = p.δ1 * (p.δ2 * v.eecs[t]) ^ p.δ3
 end

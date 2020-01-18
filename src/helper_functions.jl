@@ -97,7 +97,7 @@ end
 function load_fair_data(start_year::Int64, end_year::Int64, rcp_scenario::String)
 
     # Calculate indicies to extract RCP data (RCP data spans 1765-2500)
-    start_index, end_index = findin(collect(1765:2500), [start_year, end_year])
+    start_index, end_index = findall((in)([start_year, end_year]), collect(1765:2500))
 
     # Create vector of names for minor greenhouse gases to loop over.
     other_ghg_names = ["CF4", "C2F6", "C6F14", "HFC23", "HFC32", "HFC43_10", "HFC125", "HFC134a", "HFC143a", "HFC227ea", "HFC245fa", "SF6", "CFC_11", "CFC_12", "CFC_113", "CFC_114", "CFC_115", "CARB_TET", "MCF", "HCFC_22", "HCFC_141B", "HCFC_142B", "HALON1211", "HALON1202", "HALON1301", "HALON2402", "CH3BR", "CH3CL"]
@@ -126,23 +126,23 @@ function load_fair_data(start_year::Int64, end_year::Int64, rcp_scenario::String
     #---------------------------------------
     emissions = DataFrame()
 
-    emissions[:FossilCO2]   = rcp_emissions_raw[start_index:end_index, :FossilCO2]
-    emissions[:OtherCO2]    = rcp_emissions_raw[start_index:end_index, :OtherCO2]
-    emissions[:CH4]         = rcp_emissions_raw[start_index:end_index, :CH4]
-    emissions[:NaturalCH4]  = natural_emissions_raw[start_index:end_index, :ch4]
-    emissions[:N2O]         = rcp_emissions_raw[start_index:end_index, :N2O]
-    emissions[:NaturalN2O]  = natural_emissions_raw[start_index:end_index, :n2o]
-    emissions[:NMVOC]       = rcp_emissions_raw[start_index:end_index, :NMVOC]
-    emissions[:CO]          = rcp_emissions_raw[start_index:end_index, :CO]
-    emissions[:NOx]         = rcp_emissions_raw[start_index:end_index, :NOx]
-    emissions[:SOx]         = rcp_emissions_raw[start_index:end_index, :SOx]
-    emissions[:BC]          = rcp_emissions_raw[start_index:end_index, :BC]
-    emissions[:OC]          = rcp_emissions_raw[start_index:end_index, :OC]
-    emissions[:NH3]         = rcp_emissions_raw[start_index:end_index, :NH3]
+    emissions[!,:FossilCO2]   = rcp_emissions_raw[start_index:end_index, :FossilCO2]
+    emissions[!,:OtherCO2]    = rcp_emissions_raw[start_index:end_index, :OtherCO2]
+    emissions[!,:CH4]         = rcp_emissions_raw[start_index:end_index, :CH4]
+    emissions[!,:NaturalCH4]  = natural_emissions_raw[start_index:end_index, :ch4]
+    emissions[!,:N2O]         = rcp_emissions_raw[start_index:end_index, :N2O]
+    emissions[!,:NaturalN2O]  = natural_emissions_raw[start_index:end_index, :n2o]
+    emissions[!,:NMVOC]       = rcp_emissions_raw[start_index:end_index, :NMVOC]
+    emissions[!,:CO]          = rcp_emissions_raw[start_index:end_index, :CO]
+    emissions[!,:NOx]         = rcp_emissions_raw[start_index:end_index, :NOx]
+    emissions[!,:SOx]         = rcp_emissions_raw[start_index:end_index, :SOx]
+    emissions[!,:BC]          = rcp_emissions_raw[start_index:end_index, :BC]
+    emissions[!,:OC]          = rcp_emissions_raw[start_index:end_index, :OC]
+    emissions[!,:NH3]         = rcp_emissions_raw[start_index:end_index, :NH3]
 
     # Other greenhouse gases
     for i in other_ghg_names
-        emissions[Symbol(i)] = rcp_emissions_raw[start_index:end_index, Symbol(i)]
+        emissions[!,Symbol(i)] = rcp_emissions_raw[start_index:end_index, Symbol(i)]
     end
 
     #---------------------------------------
@@ -150,8 +150,8 @@ function load_fair_data(start_year::Int64, end_year::Int64, rcp_scenario::String
     #---------------------------------------
     gas_fractions = DataFrame()
 
-    gas_fractions[:nox_aviation] = aviation_fraction_raw[start_index:end_index]
-    gas_fractions[:ch4_fossil] = ch4_fossil_frac_raw[start_index:end_index]
+    gas_fractions[!,:nox_aviation] = aviation_fraction_raw[start_index:end_index]
+    gas_fractions[!,:ch4_fossil] = ch4_fossil_frac_raw[start_index:end_index]
 
     #---------------------------------------
     # Emission to Concentration Conversions
@@ -159,17 +159,17 @@ function load_fair_data(start_year::Int64, end_year::Int64, rcp_scenario::String
     emiss_conversions = DataFrame()
 
     # Set names for concentration conversions.
-    emiss_conversions[:gases] = vcat("CO2", "CH4", "N2O", other_ghg_names)
+    emiss_conversions[!,:gases] = vcat("CO2", "CH4", "N2O", other_ghg_names)
 
     # Mass of atmosphere (kg).
     mass_atmos = 5.1352e18
 
     # Molecular weights of air, CO₂, N₂, CH₄, and other greenhouse gases.
-    mol_wt_air    = gas_data[gas_data[:gas] .== "AIR", :mol_weight][1]
-    mol_wt_carbon = gas_data[gas_data[:gas] .== "C", :mol_weight][1]
-    mol_wt_n2     = gas_data[gas_data[:gas] .== "N2", :mol_weight][1]
-    mol_wt_ch4    = gas_data[gas_data[:gas] .== "CH4", :mol_weight][1]
-    mol_wt_others = gas_data[findin(gas_data[:gas], other_ghg_names), :mol_weight]
+    mol_wt_air    = gas_data[gas_data[!,:gas] .== "AIR", :mol_weight][1]
+    mol_wt_carbon = gas_data[gas_data[!,:gas] .== "C", :mol_weight][1]
+    mol_wt_n2     = gas_data[gas_data[!,:gas] .== "N2", :mol_weight][1]
+    mol_wt_ch4    = gas_data[gas_data[!,:gas] .== "CH4", :mol_weight][1]
+    mol_wt_others = gas_data[findall((in)(other_ghg_names), gas_data[!,:gas]), :mol_weight]
 
     # Calculate CO₂ conversion from GtC to ppm.
     emiss2conc_carbon = (mass_atmos / 1.0e18) * (mol_wt_carbon / mol_wt_air)
@@ -185,7 +185,7 @@ function load_fair_data(start_year::Int64, end_year::Int64, rcp_scenario::String
     emiss2conc_others = (mass_atmos / 1.0e18) .* (mol_wt_others ./ mol_wt_air)
 
     # Combine values conversion values into a single data frame.
-    emiss_conversions[:emiss2conc] = vcat(emiss2conc_carbon, emiss2conc_ch4, emiss2conc_n2o, emiss2conc_others)
+    emiss_conversions[!,:emiss2conc] = vcat(emiss2conc_carbon, emiss2conc_ch4, emiss2conc_n2o, emiss2conc_others)
 
     return emissions, cmip6_volcano_forcing, cmip6_solar_forcing, gas_data, gas_fractions, emiss_conversions
 end

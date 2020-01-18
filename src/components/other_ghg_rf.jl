@@ -12,18 +12,16 @@
     other_ghg_rf_net     = Variable(index=[time])             # Net radiative forcing for all well-mixed greenhouse gases (Wm⁻²).
     other_ghg_rf         = Variable(index=[time, other_ghg])  # Individual radiative forcings for each well-mixed greenhouse gas (Wm⁻²).
 
-end
 
+    function run_timestep(p, v, d, t)
 
-function run_timestep(s::other_ghg_rf, t::Int)
-    v, p, d = getvpd(s)
+        for g in d.other_ghg
+            # Caluclate radiative forcing for individual gases.
+            # Note: the factor of 0.001 here is because radiative efficiencies are given in Wm⁻²ppb⁻¹ and concentrations of minor gases are in ppt.
+            v.other_ghg_rf[t,g] = (p.conc_other_ghg[t,g] - p.other_ghg_0[g]) * p.radiative_efficiency[g] * 0.001
+        end
 
-    for g in d.other_ghg
-        # Caluclate radiative forcing for individual gases.
-        # Note: the factor of 0.001 here is because radiative efficiencies are given in Wm⁻²ppb⁻¹ and concentrations of minor gases are in ppt.
-        v.other_ghg_rf[t,g] = (p.conc_other_ghg[t,g] - p.other_ghg_0[g]) * p.radiative_efficiency[g] * 0.001
+        # Calculate total radiative forcing as sum of individual gas forcings.
+        v.other_ghg_rf_net[t] = sum(v.other_ghg_rf[t,:])
     end
-
-    # Calculate total radiative forcing as sum of individual gas forcings.
-    v.other_ghg_rf_net[t] = sum(v.other_ghg_rf[t,:])
 end

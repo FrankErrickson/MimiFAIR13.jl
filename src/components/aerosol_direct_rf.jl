@@ -27,23 +27,21 @@
     F_OC             = Variable(index=[time])  # Organic carbon forcing contribution.
     F_NH3            = Variable(index=[time])  # Ammonia forcing contribution.
     F_aerosol_direct = Variable(index=[time])  # Direct radiative forcing from aerosols (Wm⁻²).
-end
 
 
-function run_timestep(s::aerosol_direct_rf, t::Int)
-    v = s.Variables
-    p = s.Parameters
+    function run_timestep(p, v, d, t)
 
-    # Calculate forcing contributions from individual emissions.
-    v.F_SOx[t]   = p.β_SOx   * p.SOx_emiss[t]
-    v.F_CO[t]    = p.β_CO    * p.CO_emiss[t]
-    v.F_NMVOC[t] = p.β_NMVOC * p.NMVOC_emiss[t]
-    v.F_NOx[t]   = p.β_NOx   * p.NOx_emiss[t]
-    v.F_BC[t]    = p.β_BC    * p.BC_emiss[t]
-    v.F_OC[t]    = p.β_OC    * p.OC_emiss[t]
-    v.F_NH3[t]   = p.β_NH3   * p.NH3_emiss[t]
+        # Calculate forcing contributions from individual emissions.
+        v.F_SOx[t]   = p.β_SOx   * p.SOx_emiss[t]
+        v.F_CO[t]    = p.β_CO    * p.CO_emiss[t]
+        v.F_NMVOC[t] = p.β_NMVOC * p.NMVOC_emiss[t]
+        v.F_NOx[t]   = p.β_NOx   * p.NOx_emiss[t]
+        v.F_BC[t]    = p.β_BC    * p.BC_emiss[t]
+        v.F_OC[t]    = p.β_OC    * p.OC_emiss[t]
+        v.F_NH3[t]   = p.β_NH3   * p.NH3_emiss[t]
 
-    # Total direct aerosol forcing based on linear relationships between emissions and forcing in Aerocom models.
-    # Reference: Myhre et al., 2013: https://www.atmos-chem-phys.net/13/1853/2013
-    v.F_aerosol_direct[t] = v.F_SOx[t] + v.F_CO[t] +  v.F_NMVOC[t] + v.F_NOx[t] + v.F_BC[t] + v.F_OC[t] +  v.F_NH3[t]
+        # Total direct aerosol forcing based on linear relationships between emissions and forcing in Aerocom models.
+        # Reference: Myhre et al., 2013: https://www.atmos-chem-phys.net/13/1853/2013
+        v.F_aerosol_direct[t] = v.F_SOx[t] + v.F_CO[t] +  v.F_NMVOC[t] + v.F_NOx[t] + v.F_BC[t] + v.F_OC[t] +  v.F_NH3[t]
+    end
 end
