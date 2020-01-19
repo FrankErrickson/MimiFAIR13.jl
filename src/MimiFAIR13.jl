@@ -25,7 +25,7 @@ include("components/total_rf.jl")
 include("components/temperature.jl")
 
 # Export the following functions.
-export create_fair_v13
+export load_fair_data, create_fair_v13
 
 
 # -----------------------------------------------------
