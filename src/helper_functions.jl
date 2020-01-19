@@ -107,19 +107,19 @@ function load_fair_data(start_year::Int64, end_year::Int64, rcp_scenario::String
     #---------------------------------------
 
     # RCP scenario emissions.
-    rcp_emissions_raw = DataFrame(load(joinpath("data", rcp_scenario*"_EMISSIONS.csv"), skiplines_begin=36))
+    rcp_emissions_raw = DataFrame(load(joinpath(dirname(@__FILE__), "..", "data", rcp_scenario*"_EMISSIONS.csv"), skiplines_begin=36))
     # Natural emissions for methane and nitrous oxide as estimated by FAIR team.
-    natural_emissions_raw = DataFrame(load("data/natural_emissions.csv", skiplines_begin=3))
+    natural_emissions_raw = DataFrame(load(joinpath(dirname(@__FILE__), "..", "data", "natural_emissions.csv"), skiplines_begin=3))
     # CMIP6 Solar forcing.
-    cmip6_solar_forcing = DataFrame(load("data/cmip6_solar.csv", skiplines_begin=6))[start_index:end_index, Symbol("Radiative forcing")]
+    cmip6_solar_forcing = DataFrame(load(joinpath(dirname(@__FILE__), "..", "data", "cmip6_solar.csv"), skiplines_begin=6))[start_index:end_index, Symbol("Radiative forcing")]
     # CMIP6 volcanic forcing.
-    cmip6_volcano_forcing = DataFrame(load("data/cmip6_volcanic.csv", skiplines_begin=8))[start_index:end_index, Symbol("Volcanic ERF")]
+    cmip6_volcano_forcing = DataFrame(load(joinpath(dirname(@__FILE__), "..", "data", "cmip6_volcanic.csv"), skiplines_begin=8))[start_index:end_index, Symbol("Volcanic ERF")]
     # Fraction of NOx emissions attibutable to aviation (for contrail RF).
-    aviation_fraction_raw = DataFrame(load("data/aviNOx_fraction.csv", skiplines_begin=4))[:,Symbol(rcp_scenario)]
+    aviation_fraction_raw = DataFrame(load(joinpath(dirname(@__FILE__), "..", "data", "aviNOx_fraction.csv"), skiplines_begin=4))[:,Symbol(rcp_scenario)]
     # Time-varying shares of anthropogenic methane attribuatable to fossil sources.
-    ch4_fossil_frac_raw = DataFrame(load("data/fossilCH4_fraction.csv", skiplines_begin=4))[:,Symbol(rcp_scenario)]
+    ch4_fossil_frac_raw = DataFrame(load(joinpath(dirname(@__FILE__), "..", "data", "fossilCH4_fraction.csv"), skiplines_begin=4))[:,Symbol(rcp_scenario)]
     # Information on various gas specieis.
-    gas_data = DataFrame(load("data/fair_ghg_species_data.csv", skiplines_begin=10))
+    gas_data = DataFrame(load(joinpath(dirname(@__FILE__), "..", "data", "fair_ghg_species_data.csv"), skiplines_begin=10))
 
     #---------------------------------------
     # Emissions
