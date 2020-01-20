@@ -95,8 +95,8 @@ function create_fair(;rcp_scenario::String="RCP85", start_year::Int64=1765, end_
     # ---------------------------------------------
 
     # ---- Methane Cycle ---- #
-    set_param!(fair, :ch4_cycle, :fossil_emiss, rcp_emissions.CH4)
-    set_param!(fair, :ch4_cycle, :natural_emiss, rcp_emissions.NaturalCH4)
+    set_param!(fair, :ch4_cycle, :CH₄_fossil_emiss, rcp_emissions.CH4)
+    set_param!(fair, :ch4_cycle, :CH₄_natural_emiss, rcp_emissions.NaturalCH4)
     set_param!(fair, :ch4_cycle, :CH₄_0, gas_data[findfirst(gas_data[!,:gas] .== "CH4"), :pi_conc])
     set_param!(fair, :ch4_cycle, :CH₄_τ, 9.3)
     set_param!(fair, :ch4_cycle, :fossil_frac, gas_fractions.ch4_fossil)
@@ -106,8 +106,8 @@ function create_fair(;rcp_scenario::String="RCP85", start_year::Int64=1765, end_
     set_param!(fair, :ch4_cycle, :emiss2conc_ch4, conversions[findfirst(conversions[!,:gases] .== "CH4"), :emiss2conc])
 
     # ---- Nitrous Oxide Cycle ---- #
-    set_param!(fair, :n2o_cycle, :fossil_emiss, rcp_emissions.N2O)
-    set_param!(fair, :n2o_cycle, :natural_emiss, rcp_emissions.NaturalN2O)
+    set_param!(fair, :n2o_cycle, :N₂O_fossil_emiss, rcp_emissions.N2O)
+    set_param!(fair, :n2o_cycle, :N₂O_natural_emiss, rcp_emissions.NaturalN2O)
     set_param!(fair, :n2o_cycle, :N₂O_0, gas_data[findfirst(gas_data[!,:gas] .== "N2O"), :pi_conc])
     set_param!(fair, :n2o_cycle, :N₂O_τ, 121.0)
     set_param!(fair, :n2o_cycle, :emiss2conc_n2o, conversions[findfirst(conversions[!,:gases] .== "N2O"), :emiss2conc])
