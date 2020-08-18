@@ -5,6 +5,7 @@
 @defcomp co2_cycle begin
 
     CO2_0    = Parameter()              # Pre-industrial carbon dioxide concentrations (ppm)
+    Cacc_0   = Parameter()              # Initial accumulated perturbation carbon stock (amount of emitted carbon that no longer resides in the atmosphere)
     r0       = Parameter()              # Pre-industrial 100-year integrated impulse response function (iIRF100)
     rC       = Parameter()              # Increase in iIRF100 with cumulative carbon uptake (yr GtC⁻¹)
     rT       = Parameter()              # Increase in iIRF100 with warming (yr K⁻¹)
@@ -38,7 +39,7 @@
             v.C[t] = sum(v.R[t,:]) + p.CO2_0
 
             # Initial carbon stock perturbation
-            v.Cacc[t] = 0.0
+            v.Cacc[t] = p.Cacc_0
 
         else
 

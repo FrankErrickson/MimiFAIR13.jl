@@ -115,6 +115,7 @@ function create_fair(;rcp_scenario::String="RCP85", start_year::Int64=1765, end_
 
     # ---- Carbon Cycle ---- #
     set_param!(fair, :co2_cycle, :CO2_0, gas_data[findfirst(gas_data[!,:gas] .== "CO2"), :pi_conc])
+    set_param!(fair, :co2_cycle, :Cacc_0, 0.0)
     set_param!(fair, :co2_cycle, :r0, 35.0)
     set_param!(fair, :co2_cycle, :rC, 0.019)
     set_param!(fair, :co2_cycle, :rT, 4.165)
