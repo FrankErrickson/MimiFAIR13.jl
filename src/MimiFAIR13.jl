@@ -94,10 +94,22 @@ function create_fair(;rcp_scenario::String="RCP85", start_year::Int64=1765, end_
     # Assign values to model parameters.
     # ---------------------------------------------
 
+    # ---- Parameters Common to Multiple Components ---- #
+    set_param!(fair, :mol_weight_N,    gas_data[findfirst(gas_data[!,:gas] .== "N"), :mol_weight])
+    set_param!(fair, :CO₂_0,           gas_data[findfirst(gas_data[!,:gas] .== "CO2"), :pi_conc])
+    set_param!(fair, :N₂O_0,           gas_data[findfirst(gas_data[!,:gas] .== "N2O"), :pi_conc])
+    set_param!(fair, :CH₄_0,           gas_data[findfirst(gas_data[!,:gas] .== "CH4"), :pi_conc])
+    set_param!(fair, :other_ghg_0,     gas_data[findall((in)(other_ghg_names), gas_data[!,:gas]), :pi_conc])
+    set_param!(fair, :SOx_emissions,   rcp_emissions.SOx)
+    set_param!(fair, :CO_emissions,    rcp_emissions.CO)
+    set_param!(fair, :NMVOC_emissions, rcp_emissions.NMVOC)
+    set_param!(fair, :BC_emissions,    rcp_emissions.BC)
+    set_param!(fair, :NOx_emissions,   rcp_emissions.NOx)
+    set_param!(fair, :OC_emissions,    rcp_emissions.OC)
+
     # ---- Methane Cycle ---- #
-    set_param!(fair, :ch4_cycle, :CH₄_fossil_emiss, rcp_emissions.CH4)
-    set_param!(fair, :ch4_cycle, :CH₄_natural_emiss, rcp_emissions.NaturalCH4)
-    set_param!(fair, :ch4_cycle, :CH₄_0, gas_data[findfirst(gas_data[!,:gas] .== "CH4"), :pi_conc])
+    set_param!(fair, :ch4_cycle, :CH₄_fossil_emissions, rcp_emissions.CH4)
+    set_param!(fair, :ch4_cycle, :CH₄_natural_emissions, rcp_emissions.NaturalCH4)
     set_param!(fair, :ch4_cycle, :CH₄_τ, 9.3)
     set_param!(fair, :ch4_cycle, :fossil_frac, gas_fractions.ch4_fossil)
     set_param!(fair, :ch4_cycle, :oxidation_frac, 0.61)
@@ -106,15 +118,13 @@ function create_fair(;rcp_scenario::String="RCP85", start_year::Int64=1765, end_
     set_param!(fair, :ch4_cycle, :emiss2conc_ch4, conversions[findfirst(conversions[!,:gases] .== "CH4"), :emiss2conc])
 
     # ---- Nitrous Oxide Cycle ---- #
-    set_param!(fair, :n2o_cycle, :N₂O_fossil_emiss, rcp_emissions.N2O)
-    set_param!(fair, :n2o_cycle, :N₂O_natural_emiss, rcp_emissions.NaturalN2O)
-    set_param!(fair, :n2o_cycle, :N₂O_0, gas_data[findfirst(gas_data[!,:gas] .== "N2O"), :pi_conc])
+    set_param!(fair, :n2o_cycle, :N₂O_fossil_emissions, rcp_emissions.N2O)
+    set_param!(fair, :n2o_cycle, :N₂O_natural_emissions, rcp_emissions.NaturalN2O)
     set_param!(fair, :n2o_cycle, :N₂O_τ, 121.0)
     set_param!(fair, :n2o_cycle, :emiss2conc_n2o, conversions[findfirst(conversions[!,:gases] .== "N2O"), :emiss2conc])
 
 
     # ---- Carbon Cycle ---- #
-    set_param!(fair, :co2_cycle, :CO2_0, gas_data[findfirst(gas_data[!,:gas] .== "CO2"), :pi_conc])
     set_param!(fair, :co2_cycle, :Cacc_0, 0.0)
     set_param!(fair, :co2_cycle, :r0, 35.0)
     set_param!(fair, :co2_cycle, :rC, 0.019)
@@ -127,15 +137,12 @@ function create_fair(;rcp_scenario::String="RCP85", start_year::Int64=1765, end_
 
     # ---- Other Well-Mixed Greenhouse Gas Cycles ---- #
     set_param!(fair, :other_ghg_cycles, :other_ghg_τ, gas_data[findall((in)(other_ghg_names), gas_data[!,:gas]), :lifetimes])
-    set_param!(fair, :other_ghg_cycles, :other_ghg_0, gas_data[findall((in)(other_ghg_names), gas_data[!,:gas]), :pi_conc])
-    set_param!(fair, :other_ghg_cycles, :emiss_other_ghg, Matrix(rcp_emissions[:, Symbol.(other_ghg_names)]))
+    set_param!(fair, :other_ghg_cycles, :emissions_other_ghg, Matrix(rcp_emissions[:, Symbol.(other_ghg_names)]))
     set_param!(fair, :other_ghg_cycles, :emiss2conc_other_ghg, conversions[findall((in)(other_ghg_names), conversions[!,:gases]), :emiss2conc])
 
     # ---- Methane Radiative Forcing ---- #
-    set_param!(fair, :ch4_rf, :N₂O_0, gas_data[findfirst(gas_data[!,:gas] .== "N2O"), :pi_conc])
     set_param!(fair, :ch4_rf, :H₂O_share, 0.12)
     set_param!(fair, :ch4_rf, :scale_CH₄, 1.0)
-    set_param!(fair, :ch4_rf, :CH₄_0, gas_data[findfirst(gas_data[!,:gas] .== "CH4"), :pi_conc])
     set_param!(fair, :ch4_rf, :a₃, -1.3e-6)
     set_param!(fair, :ch4_rf, :b₃, -8.2e-6)
 
@@ -143,31 +150,20 @@ function create_fair(;rcp_scenario::String="RCP85", start_year::Int64=1765, end_
     set_param!(fair, :n2o_rf, :a₂, -8.0e-6)
     set_param!(fair, :n2o_rf, :b₂, 4.2e-6)
     set_param!(fair, :n2o_rf, :c₂, -4.9e-6)
-    set_param!(fair, :n2o_rf, :N₂O_0, gas_data[findfirst(gas_data[!,:gas] .== "N2O"), :pi_conc])
-    set_param!(fair, :n2o_rf, :CO₂_0, gas_data[findfirst(gas_data[!,:gas] .== "CO2"), :pi_conc])
-    set_param!(fair, :n2o_rf, :CH₄_0, gas_data[findfirst(gas_data[!,:gas] .== "CH4"), :pi_conc])
 
     # ---- Carbon Dioxide Radiative Forcing ---- #
     set_param!(fair, :co2_rf, :a₁, -2.4e-7)
     set_param!(fair, :co2_rf, :b₁, 7.2e-4)
     set_param!(fair, :co2_rf, :c₁, -2.1e-4)
-    set_param!(fair, :co2_rf, :CO₂_0, gas_data[findfirst(gas_data[!,:gas] .== "CO2"), :pi_conc])
-    set_param!(fair, :co2_rf, :N₂O_0, gas_data[findfirst(gas_data[!,:gas] .== "N2O"), :pi_conc])
     set_param!(fair, :co2_rf, :scale_CO₂, scale_co2_forcing)
 
     # ---- Other Well-Mixed Greenhouse Gas Radiative Forcings ---- #
-    set_param!(fair, :other_ghg_rf, :other_ghg_0, gas_data[findall((in)(other_ghg_names), gas_data[!,:gas]), :pi_conc])
     set_param!(fair, :other_ghg_rf, :radiative_efficiency, gas_data[findall((in)(other_ghg_names), gas_data[!,:gas]), :rad_eff])
 
     # ---- Tropospheric Ozone Radiative Forcing ---- #
-    set_param!(fair, :trop_o3_rf, :NOx_emissions, rcp_emissions.NOx)
-    set_param!(fair, :trop_o3_rf, :CO_emissions, rcp_emissions.CO)
-    set_param!(fair, :trop_o3_rf, :NMVOC_emissions, rcp_emissions.NMVOC)
-    set_param!(fair, :trop_o3_rf, :mol_weight_N, gas_data[findfirst(gas_data[!,:gas] .== "N"), :mol_weight])
     set_param!(fair, :trop_o3_rf, :mol_weight_NO, gas_data[findfirst(gas_data[!,:gas] .== "NO"), :mol_weight])
-    set_param!(fair, :trop_o3_rf, :CH₄_0, gas_data[findfirst(gas_data[!,:gas] .== "CH4"), :pi_conc])
     set_param!(fair, :trop_o3_rf, :T0, 0.0)
-    set_param!(fair, :trop_o3_rf, :fix_pre1850_RCP, true)
+    set_param!(fair, :trop_o3_rf, :fix_pre1850_RCP_o3, true)
 
     # ---- Stratospheric Ozone Radiative Forcing ---- #
     set_param!(fair, :strat_o3_rf, :Br, gas_data[findall((in)(ods_names), gas_data[!,:gas]), :br_atoms])
@@ -186,49 +182,33 @@ function create_fair(;rcp_scenario::String="RCP85", start_year::Int64=1765, end_
     set_param!(fair, :aerosol_direct_rf, :β_BC, 1.601537e-2)
     set_param!(fair, :aerosol_direct_rf, :β_OC, -1.45339e-3)
     set_param!(fair, :aerosol_direct_rf, :β_NH3, -1.55605e-3)
-    set_param!(fair, :aerosol_direct_rf, :SOx_emiss, rcp_emissions.SOx)
-    set_param!(fair, :aerosol_direct_rf, :CO_emiss, rcp_emissions.CO)
-    set_param!(fair, :aerosol_direct_rf, :NMVOC_emiss, rcp_emissions.NMVOC)
-    set_param!(fair, :aerosol_direct_rf, :NOx_emiss, rcp_emissions.NOx)
-    set_param!(fair, :aerosol_direct_rf, :BC_emiss, rcp_emissions.BC)
-    set_param!(fair, :aerosol_direct_rf, :OC_emiss, rcp_emissions.OC)
-    set_param!(fair, :aerosol_direct_rf, :NH3_emiss, rcp_emissions.NH3)
+    set_param!(fair, :aerosol_direct_rf, :NH3_emissions, rcp_emissions.NH3)
 
     # ---- Aerosol Indirect Radiative Forcing ---- #
     set_param!(fair, :aerosol_indirect_rf, :ϕ, -1.95011431)
     set_param!(fair, :aerosol_indirect_rf, :b_SOx, 0.01107147)
     set_param!(fair, :aerosol_indirect_rf, :b_POM, 0.01387492)
-    set_param!(fair, :aerosol_indirect_rf, :SOx_emiss, rcp_emissions.SOx)
-    set_param!(fair, :aerosol_indirect_rf, :BC_emiss, rcp_emissions.BC)
-    set_param!(fair, :aerosol_indirect_rf, :OC_emiss, rcp_emissions.OC)
-    set_param!(fair, :aerosol_indirect_rf, :rcp_1850_index, findfirst(x -> x == 1850, collect(1765:end_year)))
     set_param!(fair, :aerosol_indirect_rf, :SOx_emiss_1765, 1.0)
     set_param!(fair, :aerosol_indirect_rf, :BC_OC_emiss_1765, 11.2)
     set_param!(fair, :aerosol_indirect_rf, :scale_AR5, true)
-    set_param!(fair, :aerosol_indirect_rf, :fix_pre1850_RCP, true)
+    set_param!(fair, :aerosol_indirect_rf, :fix_pre1850_RCP_ai, true)
     set_param!(fair, :aerosol_indirect_rf, :F_1765, -0.3002836449793625)
     set_param!(fair, :aerosol_indirect_rf, :F_2011, -1.5236182344467388)
 
-    # ---- Black Carbon on Snow Radiative Forcing ---- #
-    set_param!(fair, :bc_snow_rf, :BC_emiss, rcp_emissions.BC)
-
     # ---- Land Use Change Radiative Forcing ---- #
-    set_param!(fair, :landuse_rf, :landuse_emiss, rcp_emissions.OtherCO2)
+    set_param!(fair, :landuse_rf, :landuse_emissions, rcp_emissions.OtherCO2)
 
     # ---- Contrails Radiative Forcing ---- #
-    set_param!(fair, :contrails_rf, :NOx_emiss, rcp_emissions.NOx)
     set_param!(fair, :contrails_rf, :frac, gas_fractions.nox_aviation)
     set_param!(fair, :contrails_rf, :E_ref, 2.946)
     set_param!(fair, :contrails_rf, :F_ref, 0.0448)
     set_param!(fair, :contrails_rf, :ref_is_NO2, true)
     set_param!(fair, :contrails_rf, :mol_weight_NO₂, gas_data[findfirst(gas_data[!,:gas] .== "NO2"), :mol_weight])
-    set_param!(fair, :contrails_rf, :mol_weight_N, gas_data[findfirst(gas_data[!,:gas] .== "N"), :mol_weight])
 
     # ---- Total Radiative Forcing ---- #
     set_param!(fair, :total_rf, :F_volcanic, volcano_forcing)
     set_param!(fair, :total_rf, :F_solar, solar_forcing)
     set_param!(fair, :total_rf, :F_exogenous, zeros(nsteps))
-    set_param!(fair, :total_rf, :efficacy_CO₂, 1.0)
     set_param!(fair, :total_rf, :efficacy_CO₂, 1.0)
     set_param!(fair, :total_rf, :efficacy_CH₄, 1.0)
     set_param!(fair, :total_rf, :efficacy_CH₄_H₂O, 1.0)
@@ -277,7 +257,7 @@ function create_fair(;rcp_scenario::String="RCP85", start_year::Int64=1765, end_
     connect_param!(fair, :temperature, :F, :total_rf, :total_forcing)
 
     # Return FAIR model.
-    return fair
+    return Mimi.build(fair)
 end
 
 end # module
