@@ -4,18 +4,18 @@
 
 @defcomp ch4_cycle begin
 
-    emiss2conc_ch4    = Parameter()             # Conversion between ppb/ppt concentrations and Mt/kt emissions.
-    CH₄_0             = Parameter()             # Initial (pre-industrial) atmospheric methane concentration (ppb).
-    CH₄_τ             = Parameter()             # Atmospheric (e-folding) lifetime of methane.
-    oxidation_frac    = Parameter()             # Fraction of methane lost through reaction with hydroxyl radical that is converted to carbon dioxide.
-    mol_weight_CH₄    = Parameter()             # Molecular mass of methane.
-    mol_weight_CO₂    = Parameter()             # Molecular mass of carbon dioxide.
-    CH₄_fossil_emiss  = Parameter(index=[time]) # Fossil-fuel methane emissions (Mt CH₄ yr⁻¹).
-    CH₄_natural_emiss = Parameter(index=[time]) # Natural methane emissions (Mt CH₄ yr⁻¹).
-    fossil_frac       = Parameter(index=[time]) # Fraciton of anthropogenic methane attributable to fossil sources.
+    emiss2conc_ch4        = Parameter()             # Conversion between ppb/ppt concentrations and Mt/kt emissions.
+    CH₄_0                 = Parameter()             # Initial (pre-industrial) atmospheric methane concentration (ppb).
+    CH₄_τ                 = Parameter()             # Atmospheric (e-folding) lifetime of methane.
+    oxidation_frac        = Parameter()             # Fraction of methane lost through reaction with hydroxyl radical that is converted to carbon dioxide.
+    mol_weight_CH₄        = Parameter()             # Molecular mass of methane.
+    mol_weight_CO₂        = Parameter()             # Molecular mass of carbon dioxide.
+    CH₄_fossil_emissions  = Parameter(index=[time]) # Fossil-fuel methane emissions (Mt CH₄ yr⁻¹).
+    CH₄_natural_emissions = Parameter(index=[time]) # Natural methane emissions (Mt CH₄ yr⁻¹).
+    fossil_frac           = Parameter(index=[time]) # Fraciton of anthropogenic methane attributable to fossil sources.
 
-    CH₄               = Variable(index=[time])  # Atmospheric methane concentration (ppb).
-    oxidised_CH₄      = Variable(index=[time])  # Methane that has been oxidized to carbon dioxide.
+    CH₄                   = Variable(index=[time])  # Atmospheric methane concentration (ppb).
+    oxidised_CH₄          = Variable(index=[time])  # Methane that has been oxidized to carbon dioxide.
 
 
     function run_timestep(p, v, d, t)
@@ -28,8 +28,8 @@
         else
 
             # Calculate atmospheric methane concentration.
-            emiss_prev = p.CH₄_fossil_emiss[t-1] + p.CH₄_natural_emiss[t]
-            emiss_curr = p.CH₄_fossil_emiss[t] + p.CH₄_natural_emiss[t]
+            emiss_prev = p.CH₄_fossil_emissions[t-1] + p.CH₄_natural_emissions[t]
+            emiss_curr = p.CH₄_fossil_emissions[t] + p.CH₄_natural_emissions[t]
             v.CH₄[t] = v.CH₄[t-1] - v.CH₄[t-1] * (1.0 - exp(-1/p.CH₄_τ)) + 0.5 * (emiss_prev + emiss_curr) * (1.0/p.emiss2conc_ch4)
 
             # Calculate carbon dioxide from oxidized methane (bounded below at 0.0).

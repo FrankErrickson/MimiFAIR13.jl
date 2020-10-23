@@ -11,13 +11,13 @@
     β_BC             = Parameter()             # Black carbon radiative efficiency: Wm⁻²(Mt yr⁻¹)⁻¹.
     β_OC             = Parameter()             # Organic carbon radiative efficiency: Wm⁻²(Mt yr⁻¹)⁻¹.
     β_NH3            = Parameter()             # Ammonia radiative efficiency: Wm⁻²(Mt yr⁻¹)⁻¹.
-    SOx_emiss        = Parameter(index=[time]) # Emissions (MtS yr⁻¹).
-    CO_emiss         = Parameter(index=[time]) # Emissions (MtCO yr⁻¹).
-    NMVOC_emiss      = Parameter(index=[time]) # Emissions (Mt yr⁻¹).
-    NOx_emiss        = Parameter(index=[time]) # Emissions (MtN yr⁻¹).
-    BC_emiss         = Parameter(index=[time]) # Emissions (Mt yr⁻¹).
-    OC_emiss         = Parameter(index=[time]) # Emissions (Mt yr⁻¹).
-    NH3_emiss        = Parameter(index=[time]) # Emissions (MtN yr⁻¹).
+    SOx_emissions    = Parameter(index=[time]) # Emissions (MtS yr⁻¹).
+    CO_emissions     = Parameter(index=[time]) # Emissions (MtCO yr⁻¹).
+    NMVOC_emissions  = Parameter(index=[time]) # Emissions (Mt yr⁻¹).
+    NOx_emissions    = Parameter(index=[time]) # Emissions (MtN yr⁻¹).
+    BC_emissions     = Parameter(index=[time]) # Emissions (Mt yr⁻¹).
+    OC_emissions     = Parameter(index=[time]) # Emissions (Mt yr⁻¹).
+    NH3_emissions    = Parameter(index=[time]) # Emissions (MtN yr⁻¹).
 
     F_SOx            = Variable(index=[time])  # Sulfur oxides forcing contribution.
     F_CO             = Variable(index=[time])  # Carbon monoxide forcing contribution.
@@ -32,13 +32,13 @@
     function run_timestep(p, v, d, t)
 
         # Calculate forcing contributions from individual emissions.
-        v.F_SOx[t]   = p.β_SOx   * p.SOx_emiss[t]
-        v.F_CO[t]    = p.β_CO    * p.CO_emiss[t]
-        v.F_NMVOC[t] = p.β_NMVOC * p.NMVOC_emiss[t]
-        v.F_NOx[t]   = p.β_NOx   * p.NOx_emiss[t]
-        v.F_BC[t]    = p.β_BC    * p.BC_emiss[t]
-        v.F_OC[t]    = p.β_OC    * p.OC_emiss[t]
-        v.F_NH3[t]   = p.β_NH3   * p.NH3_emiss[t]
+        v.F_SOx[t]   = p.β_SOx   * p.SOx_emissions[t]
+        v.F_CO[t]    = p.β_CO    * p.CO_emissions[t]
+        v.F_NMVOC[t] = p.β_NMVOC * p.NMVOC_emissions[t]
+        v.F_NOx[t]   = p.β_NOx   * p.NOx_emissions[t]
+        v.F_BC[t]    = p.β_BC    * p.BC_emissions[t]
+        v.F_OC[t]    = p.β_OC    * p.OC_emissions[t]
+        v.F_NH3[t]   = p.β_NH3   * p.NH3_emissions[t]
 
         # Total direct aerosol forcing based on linear relationships between emissions and forcing in Aerocom models.
         # Reference: Myhre et al., 2013: https://www.atmos-chem-phys.net/13/1853/2013
