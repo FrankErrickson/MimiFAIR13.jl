@@ -257,7 +257,7 @@ function create_fair(;rcp_scenario::String="RCP85", start_year::Int64=1765, end_
     connect_param!(fair, :temperature, :F, :total_rf, :total_forcing)
 
     # Return FAIR model.
-    return Mimi.build(fair)
+    return fair
 end
 
 end # module
